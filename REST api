@@ -1,0 +1,53 @@
+const express = require('express');
+const app = express();
+const port = 3000; // You can change the port number as needed
+
+// Middleware to parse JSON requests
+app.use(express.json());
+
+// Sample data for demonstration
+const items = [
+  { id: 1, name: 'Item 1' },
+  { id: 2, name: 'Item 2' },
+  { id: 3, name: 'Item 3' },
+  { id: 4, name: 'Item 4' },
+];
+
+// Endpoint 1: Get all items
+app.get('/api/items', (req, res) => {
+  res.json(items);
+});
+
+// Endpoint 2: Get an item by ID
+app.get('/api/items/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const item = items.find((item) => item.id === id);
+  if (!item) {
+    return res.status(404).json({ message: 'Item not found' });
+  }
+  res.json(item);
+});
+
+// Endpoint 3: Add a new item
+app.post('/api/items', (req, res) => {
+  const newItem = req.body;
+  items.push(newItem);
+  res.status(201).json(newItem);
+});
+
+// Endpoint 4: Update an item by ID
+app.put('/api/items/:id', (req, res) => {
+  const id = parseInt(req.params.id);
+  const updatedItem = req.body;
+  const index = items.findIndex((item) => item.id === id);
+  if (index === -1) {
+    return res.status(404).json({ message: 'Item not found' });
+  }
+  items[index] = updatedItem;
+  res.json(updatedItem);
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
